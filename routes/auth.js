@@ -1,10 +1,11 @@
 const express = require("express");
+const { route } = require("express/lib/application");
 const router = express.Router();
+var mysql = require('mysql');
+const {connect, con} = require('../mysqlConnect');
 
 router.get('/',(req,res)=>{
-  var name = req.query.name;
-  console.log(req);
-  res.send(name);
+  res.send("Please pass the variable");
 });
 
 router.post('/playerRegistration',(req,res)=>{
@@ -14,15 +15,19 @@ router.post('/playerRegistration',(req,res)=>{
   var password = req.query.password;
 
   if(name.length !=0){
-    res.status(200).send("Player Registration Successfull");
+  con.query("INSERT INTO `registration` (`id`, `email`, `nickname`, `password`) VALUES (NULL, '"+name+"', '"+nickname+"', '"+password+"');",(err,result,field)=>{
+    var response_code = {status:"200",res_msg:"Player Registratration Successfull"};
+    res.status(200).send(response_code);
+  });
   }
   else{
-    res.status(400).send("Player Registration Not Successfull");
+    var response_code = {status:"400",res_msg:"Player registration not enter"};
+    res.status(400).send(response_code);
   }
 
 });
 
-router.post('/playerRegistration',(req,res)=>{
+router.post('/login_player',(req,res)=>{
 
   var email = req.query.name;
   var password = req.query.password;
